@@ -30,6 +30,10 @@ Sea Monster: Concept art, vector by Chris Hildenbrand, Painting by Nathan Lovato
 Scaled down from https://opengameart.org/content/the-kraken-svg-illustration-with-paintover
 License: CC-BY 4.0
 
+Wizards by wolfgang wozniak
+Multiple wizards from https://opengameart.org/content/mages
+License: CC-BY 3.0
+
 # To Do
 Add title screen.
 Add credits page so that attributions are available on the web.
