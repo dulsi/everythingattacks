@@ -26,6 +26,10 @@ Giant Robot by wuhu
 Scaled down from https://opengameart.org/content/robot-sprite-brawlbot
 License: Public Domain
 
+Sea Monster: Concept art, vector by Chris Hildenbrand, Painting by Nathan Lovato
+Scaled down from https://opengameart.org/content/the-kraken-svg-illustration-with-paintover
+License: CC-BY 4.0
+
 # To Do
 Add title screen.
 Add credits page so that attributions are available on the web.
