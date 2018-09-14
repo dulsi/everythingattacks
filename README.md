@@ -61,13 +61,12 @@ Zombies by Dennis Payne
 Design inspired by https://opengameart.org/content/oldschool-rpg-monsters
 License: CC-BY-SA 3.0
 
-Pirate Ship byt KokoroReflections
+Pirate Ship by KokoroReflections
 Scale down from https://opengameart.org/content/old-fashioned-pirate-ship
 License: CC-BY 4.0
 
 # To Do
 Add title screen.
-Add credits page so that attributions are available on the web.
 Implement practice mode which tells you what the state is when you select wrong.
 Implement test mode where no results are given until the end.
 Add more enemies.
