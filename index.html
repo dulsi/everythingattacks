@@ -120,10 +120,15 @@ var mode = GameMode.PLAY;
     if (names[choice].name == states[currentState].name)
     {
      states[currentState].color = "#00FF00";
+     names[choice].used = true;
     }
     else
     {
      states[currentState].color = "#000000";
+     names.forEach(function(nm) {
+      if (nm.name == states[currentState].name)
+       nm.used = true;
+     });
     }
     mode = GameMode.RESULT;
     mainDraw();
@@ -251,9 +256,13 @@ function mainDraw()
  var width = Math.floor(canvas.width / 3);
  for (i = 0; i < names.length; i++)
  {
+  ctx.beginPath();
   var row = i % 3;
   var col = Math.floor(i / 3);
-  ctx.fillStyle = "#FFFFFF";
+  if (names[i].used)
+   ctx.fillStyle = "#AAAAAA";
+  else
+   ctx.fillStyle = "#FFFFFF";
   ctx.rect(5 + width * row, 590 + 50 * col, width - 5, 40);
   ctx.fill();
   ctx.stroke();
