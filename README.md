@@ -49,7 +49,7 @@ Johannes Sjölund (AKA wulax) red bracers based on bracers by Johannes Sjölund
 Sjölund (AKA wulax) and Joe White Major Triumph's mask and suit are based on
 male body with base animations by Johannes Sjölund (AKA wulax) and Stephen
 Challener (AKA Redshrike) black hero pants based on white pants by Johannes
-Sjölund (AKA wulax)
+Sjölund (AKA wulax)"
 https://opengameart.org/content/lpc-major-triumph
 License: CC-BY-SA 3.0
 
