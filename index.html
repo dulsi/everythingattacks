@@ -253,6 +253,13 @@ function mainDraw()
    ctx.fill(p);
    ctx.stroke(p);
   }
+  if ((state.color != "#FFFFFF") && ((currentState == -1) || (state.name != states[currentState].name)))
+  {
+   ctx.font = "15px Arial";
+   ctx.fillStyle = "#0000FF";
+   ctx.textAlign = "center";
+   ctx.fillText(state.name, state.attackX, state.attackY);
+  }
  });
  var i;
  var width = Math.floor(canvas.width / 3);
