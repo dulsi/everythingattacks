@@ -67,7 +67,6 @@ License: CC-BY 4.0
 
 # To Do
 Add title screen.
-Implement practice mode which tells you what the state is when you select wrong.
 Implement test mode where no results are given until the end.
 Add more enemies.
 Add state capitals.

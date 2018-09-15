@@ -82,7 +82,7 @@ var GameMode = {
 var mode = GameMode.PLAY;
 </script>
 <p><img id="title" src="title.png" /></p>
-<canvas id="world" width="800" height="800"></canvas>
+<canvas id="world" width="800" height="740"></canvas>
 <div style="display:none;">
 <img id="alien" src="alien.png" />
 <img id="dragon" src="dragon.png" />
@@ -113,9 +113,9 @@ var mode = GameMode.PLAY;
    if ((xPos % width) < 5)
     return;
    row = Math.floor(xPos / width);
-   if ((yPos < 590) || ((yPos - 590) % 50 >= 40))
+   if ((yPos < 576) || ((yPos - 576) % 40 >= 36))
     return;
-   var col = Math.floor((yPos - 590) / 50);
+   var col = Math.floor((yPos - 576) / 40);
    var choice = col * 3 + row;
    if (choice < names.length)
    {
@@ -272,7 +272,7 @@ function mainDraw()
    ctx.fillStyle = "#AAAAAA";
   else
    ctx.fillStyle = "#FFFFFF";
-  ctx.rect(5 + width * row, 590 + 50 * col, width - 5, 40);
+  ctx.rect(5 + width * row, 576 + 40 * col, width - 5, 36);
   ctx.fill();
   ctx.stroke();
  }
@@ -280,15 +280,15 @@ function mainDraw()
  {
   var row = i % 3;
   var col = Math.floor(i / 3);
-  ctx.font = "34px Arial";
+  ctx.font = "30px Arial";
   ctx.fillStyle = "#000000";
   ctx.textAlign = "center";
-  ctx.fillText(names[i].name, Math.floor(width / 2) + width * row, 620 + 50 * col);
+  ctx.fillText(names[i].name, Math.floor(width / 2) + width * row, 604 + 40 * col);
  }
  var img = document.getElementById(challenges[currentChallenge].imgID);
  if (currentState != -1)
   ctx.drawImage(img, states[currentState].attackX - Math.floor(img.width / 2), states[currentState].attackY - Math.floor(img.height / 2));
- ctx.font = "34px Arial";
+ ctx.font = "30px Arial";
  ctx.fillStyle = "#AA0000";
  ctx.textAlign = "center";
  if (mode == GameMode.PLAY)
