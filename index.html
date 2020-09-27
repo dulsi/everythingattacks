@@ -1,6 +1,11 @@
 <html>
 <head>
 <style>
+html {
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+}
   body {
     text-align: center;
     font-family: sans-serif;
@@ -29,6 +34,7 @@ function Threat(name, plural, imgID) {
  this.used = false;
 }
 
+var mainMenu = ["Eastern States", "Southern States", "Central States", "Western States", "Credits"];
 var stateGroup = 0;
 var buttonsY = [536, 536, 536, 576];
 var messageY = [530, 530, 530, 570];
@@ -135,15 +141,16 @@ var currentState = 0;
 var currentChallenge = 0;
 var names = [];
 var GameMode = {
- PLAY : 1,
- RESULT : 2,
- END : 3
+ MENU : 1,
+ PLAY : 2,
+ RESULT : 3,
+ END : 4
 };
-var mode = GameMode.PLAY;
+var mode = GameMode.MENU;
 </script>
-<p><img id="title" src="title.png" /></p>
 <canvas id="world" width="800" height="740"></canvas>
 <div style="display:none;">
+<img id="titleimg" src="title.png" />
 <img id="alien" src="alien.png" />
 <img id="dragon" src="dragon.png" />
 <img id="ninja" src="ninja.png" />
@@ -158,19 +165,73 @@ var mode = GameMode.PLAY;
 <img id="eyeballs" src="eyeballs.png" />
 <img id="ratmen" src="ratmen.png" />
 </div>
-<p><a href="credits.html">Credits</a></p>
 <script>
  var canvas = document.getElementById('world');
  var ctx = canvas.getContext('2d');
  var timerVal;
+ var multX = 1;
+ var multY = 1;
+
+ function resize() {
+  var targetAspect = canvas.width / canvas.height,
+   newWidth = window.innerWidth,
+   newHeight = window.innerHeight,
+   newAspect = newWidth / newHeight;
+
+  if (newAspect > targetAspect) {
+   newWidth = newHeight * targetAspect;
+   canvas.style.height = newHeight + "px";
+   canvas.style.width = newWidth + "px";
+   canvas.style.left = (window.innerWidth - newWidth) / 2 + "px";
+   canvas.style.top = "0px";
+  } else {
+   newHeight = newWidth / targetAspect;
+   canvas.style.width = newWidth + "px";
+   canvas.style.height = newHeight + "px";
+   canvas.style.top = (window.innerHeight - newHeight) / 2 + "px";
+   canvas.style.left = "0px";
+  }
+  multX = canvas.width / newWidth;
+  multY = canvas.height / newHeight;
+ }
+
+ window.addEventListener("resize", resize, false);
+ window.addEventListener("orientationchange", resize, false);
 
  function mousedown_handler(e)
  {
-  if (mode == GameMode.PLAY)
+  if (mode == GameMode.MENU)
   {
    var parentPosition = getPosition(e.currentTarget);
-   var xPos = e.clientX - parentPosition.x;
-   var yPos = e.clientY - parentPosition.y;
+   var xPos = (e.clientX - parentPosition.x) * multX;
+   var yPos = (e.clientY - parentPosition.y) * multY;
+   if ((yPos >= 300) && (yPos < 300 + 40 * 4))
+   {
+   //300 + 40 * i
+    mode = GameMode.PLAY;
+    //stateGroup = Math.floor((Math.random() * 1000)) % states.length;
+    stateGroup = Math.floor((yPos - 300) / 40);
+    var i;
+    names = [];
+    for (i = 0; i < states[stateGroup].length; i++)
+    {
+     names.push(new NameItem(states[stateGroup][findState()].name));
+    }
+    clearStates();
+    currentState = findState();
+    currentChallenge = findChallenge();
+    mainDraw();
+   }
+   else if ((yPos >= 300 + 40 * 4) && (yPos < 300 + 40 * 5))
+   {
+    window.location.href = "credits.html";
+   }
+  }
+  else if (mode == GameMode.PLAY)
+  {
+   var parentPosition = getPosition(e.currentTarget);
+   var xPos = (e.clientX - parentPosition.x) * multX;
+   var yPos = (e.clientY - parentPosition.y) * multY;
    var width = Math.floor(canvas.width / 3);
    if ((xPos % width) < 5)
     return;
@@ -299,87 +360,101 @@ function mainDraw()
 {
  ctx.clearRect(0, 0, canvas.width, canvas.height);
  ctx.strokeStyle = "#000000";
- states[stateGroup].forEach(function(state) {
-  ctx.fillStyle = state.color;
-  if (Array.isArray(state.path))
+ if (mode == GameMode.MENU)
+ {
+  var img = document.getElementById("titleimg");
+  ctx.drawImage(img, Math.floor(canvas.width / 2) - Math.floor(img.width / 2), 200);
+  for (i = 0; i < mainMenu.length; i++)
   {
-   state.path.forEach(function(path1) {
-    var p = new Path2D(path1);
+   ctx.beginPath();
+   ctx.fillStyle = "#FFFFFF";
+   ctx.rect(100 , 300 + 40 * i, canvas.width - 200, 36);
+   ctx.fill();
+   ctx.stroke();
+  }
+  for (i = 0; i < mainMenu.length; i++)
+  {
+   ctx.font = "30px Arial";
+   ctx.fillStyle = "#000000";
+   ctx.textAlign = "center";
+   ctx.fillText(mainMenu[i], Math.floor(canvas.width / 2), 300 + 28 + 40 * i);
+  }
+ }
+ else
+ {
+  states[stateGroup].forEach(function(state) {
+   ctx.fillStyle = state.color;
+   if (Array.isArray(state.path))
+   {
+    state.path.forEach(function(path1) {
+     var p = new Path2D(path1);
+     ctx.fill(p);
+     ctx.stroke(p);
+    });
+   }
+   else
+   {
+    var p = new Path2D(state.path);
     ctx.fill(p);
     ctx.stroke(p);
-   });
-  }
-  else
+   }
+  });
+  states[stateGroup].forEach(function(state) {
+   if ((state.color != "#FFFFFF") && ((currentState == -1) || (state.name != states[stateGroup][currentState].name)))
+   {
+    ctx.font = "15px Arial";
+    ctx.fillStyle = "#0000FF";
+    ctx.textAlign = "center";
+    ctx.fillText(state.name, state.attackX, state.attackY);
+   }
+  });
+  var i;
+  var width = Math.floor(canvas.width / 3);
+  for (i = 0; i < names.length; i++)
   {
-   var p = new Path2D(state.path);
-   ctx.fill(p);
-   ctx.stroke(p);
+   ctx.beginPath();
+   var row = i % 3;
+   var col = Math.floor(i / 3);
+   if (names[i].used)
+    ctx.fillStyle = "#AAAAAA";
+   else
+    ctx.fillStyle = "#FFFFFF";
+   ctx.rect(5 + width * row, buttonsY[stateGroup] + 40 * col, width - 5, 36);
+   ctx.fill();
+   ctx.stroke();
   }
- });
- states[stateGroup].forEach(function(state) {
-  if ((state.color != "#FFFFFF") && ((currentState == -1) || (state.name != states[stateGroup][currentState].name)))
+  for (i = 0; i < names.length; i++)
   {
-   ctx.font = "15px Arial";
-   ctx.fillStyle = "#0000FF";
+   var row = i % 3;
+   var col = Math.floor(i / 3);
+   ctx.font = "30px Arial";
+   ctx.fillStyle = "#000000";
    ctx.textAlign = "center";
-   ctx.fillText(state.name, state.attackX, state.attackY);
+   ctx.fillText(names[i].name, Math.floor(width / 2) + width * row, buttonsY[stateGroup] + 28 + 40 * col);
   }
- });
- var i;
- var width = Math.floor(canvas.width / 3);
- for (i = 0; i < names.length; i++)
- {
-  ctx.beginPath();
-  var row = i % 3;
-  var col = Math.floor(i / 3);
-  if (names[i].used)
-   ctx.fillStyle = "#AAAAAA";
-  else
-   ctx.fillStyle = "#FFFFFF";
-  ctx.rect(5 + width * row, buttonsY[stateGroup] + 40 * col, width - 5, 36);
-  ctx.fill();
-  ctx.stroke();
- }
- for (i = 0; i < names.length; i++)
- {
-  var row = i % 3;
-  var col = Math.floor(i / 3);
+  var img = document.getElementById(challenges[currentChallenge].imgID);
+  if (currentState != -1)
+   ctx.drawImage(img, states[stateGroup][currentState].attackX - Math.floor(img.width / 2), states[stateGroup][currentState].attackY - Math.floor(img.height / 2));
   ctx.font = "30px Arial";
-  ctx.fillStyle = "#000000";
+  ctx.fillStyle = "#AA0000";
   ctx.textAlign = "center";
-  ctx.fillText(names[i].name, Math.floor(width / 2) + width * row, buttonsY[stateGroup] + 28 + 40 * col);
- }
- var img = document.getElementById(challenges[currentChallenge].imgID);
- if (currentState != -1)
-  ctx.drawImage(img, states[stateGroup][currentState].attackX - Math.floor(img.width / 2), states[stateGroup][currentState].attackY - Math.floor(img.height / 2));
- ctx.font = "30px Arial";
- ctx.fillStyle = "#AA0000";
- ctx.textAlign = "center";
- if (mode == GameMode.PLAY)
- {
-  ctx.fillText(challenges[currentChallenge].name + (challenges[currentChallenge].plural ? " attack" : " attacks"), canvas.width / 2, messageY[stateGroup]);
- }
- else if (mode == GameMode.RESULT)
- {
-  if (states[stateGroup][currentState].color == "#000000")
-   ctx.fillText(challenges[currentChallenge].name + (challenges[currentChallenge].plural ? " destroy " : " destroys ") + states[stateGroup][currentState].name, canvas.width / 2, messageY[stateGroup]);
-  else
-   ctx.fillText(challenges[currentChallenge].name + (challenges[currentChallenge].plural ? " are defeated" : " is defeated"), canvas.width / 2, messageY[stateGroup]);
+  if (mode == GameMode.PLAY)
+  {
+   ctx.fillText(challenges[currentChallenge].name + (challenges[currentChallenge].plural ? " attack" : " attacks"), canvas.width / 2, messageY[stateGroup]);
+  }
+  else if (mode == GameMode.RESULT)
+  {
+   if (states[stateGroup][currentState].color == "#000000")
+    ctx.fillText(challenges[currentChallenge].name + (challenges[currentChallenge].plural ? " destroy " : " destroys ") + states[stateGroup][currentState].name, canvas.width / 2, messageY[stateGroup]);
+   else
+    ctx.fillText(challenges[currentChallenge].name + (challenges[currentChallenge].plural ? " are defeated" : " is defeated"), canvas.width / 2, messageY[stateGroup]);
+  }
  }
 }
 
- stateGroup = Math.floor((Math.random() * 1000)) % states.length;
- var i;
- for (i = 0; i < states[stateGroup].length; i++)
- {
-  names.push(new NameItem(states[stateGroup][findState()].name));
- }
- clearStates();
-
  canvas.onmousedown = mousedown_handler;
+ resize();
  window.onload = function() {
-  currentState = findState();
-  currentChallenge = findChallenge();
   mainDraw();
  };
 </script>
